@@ -37,7 +37,7 @@ class SearchIndexesController extends BcAdminApiController
     {
         $response = parent::beforeFilter($event);
         if($response) return $response;
-        $this->FormProtection->setConfig('validate', false);
+        $this->Security->setConfig('validatePost', false);
     }
 
     /**

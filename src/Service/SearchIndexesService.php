@@ -86,7 +86,7 @@ class SearchIndexesService implements SearchIndexesServiceInterface
      */
     public function getIndex(array $queryParams = []): Query
     {
-        $query = $this->SearchIndexes->find()->orderBy([
+        $query = $this->SearchIndexes->find()->order([
             'SearchIndexes.priority DESC',
             'SearchIndexes.modified DESC',
             'SearchIndexes.id'
@@ -250,7 +250,7 @@ class SearchIndexesService implements SearchIndexesServiceInterface
                 'rght <' => $parentContent->rght
             ]);
         }
-        $contents = $contentsTable->find()->contain(['Sites'])->where($conditions)->orderBy('lft')->all();
+        $contents = $contentsTable->find()->contain(['Sites'])->where($conditions)->order('lft')->all();
 
         $db = $this->SearchIndexes->getConnection();
         $db->begin();

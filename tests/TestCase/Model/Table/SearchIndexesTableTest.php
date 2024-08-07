@@ -13,8 +13,6 @@ namespace BcSearchIndex\Test\TestCase\Model\Table;
 
 use BcSearchIndex\Model\Table\SearchIndexesTable;
 use BaserCore\TestSuite\BcTestCase;
-use BcSearchIndex\Test\Scenario\Service\SearchIndexesServiceScenario;
-use CakephpFixtureFactories\Scenario\ScenarioAwareTrait;
 
 /**
  * Class SearchIndexesTableTest
@@ -24,14 +22,19 @@ class SearchIndexesTableTest extends BcTestCase
 {
 
     /**
-     * Trait
-     */
-    use ScenarioAwareTrait;
-
-    /**
      * @var SearchIndexesTable
      */
     public $SearchIndexes;
+
+    /**
+     * Fixtures
+     *
+     * @var array
+     */
+    protected $fixtures = [
+        'plugin.BaserCore.Contents',
+        'plugin.BcSearchIndex.SearchIndexes',
+    ];
 
     /**
      * Set Up
@@ -72,14 +75,13 @@ class SearchIndexesTableTest extends BcTestCase
 	 */
 	public function testAllowPublish($publish_begin, $publish_end, $status, $expected)
 	{
-        $this->loadFixtureScenario(SearchIndexesServiceScenario::class);
 		$data['publish_begin'] = $publish_begin;
 		$data['publish_end'] = $publish_end;
 		$data['status'] = $status;
 		$this->assertEquals($this->SearchIndexes->allowPublish($data), $expected);
 	}
 
-	public static function allowPublishDataProvider()
+	public function allowPublishDataProvider()
 	{
 		return [
 			[null, null, false, false],
