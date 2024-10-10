@@ -20,7 +20,7 @@ use BaserCore\Annotation\Checked;
 /**
  * Class Plugin
  */
-class BcSearchIndexPlugin extends BcPlugin
+class Plugin extends BcPlugin
 {
 
     /**
