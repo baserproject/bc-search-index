@@ -217,7 +217,7 @@ class SearchIndexesServiceTest extends BcTestCase
      * createIndexConditionsテストのデータプロバイダ
      * @return array
      */
-    public static function createIndexConditionsDataProvider(): array
+    public function createIndexConditionsDataProvider(): array
     {
         return [
             // 空配列の結果テスト
@@ -267,7 +267,7 @@ class SearchIndexesServiceTest extends BcTestCase
      * Data Provider for parseQuery
      * @return array
      */
-    public static function parseQueryDataProvider(): array
+    public function parseQueryDataProvider(): array
     {
         return [
             ['', ['']],
