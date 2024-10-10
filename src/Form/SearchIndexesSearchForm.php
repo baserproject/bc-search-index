@@ -13,9 +13,6 @@ namespace BcSearchIndex\Form;
 
 use Cake\Form\Form;
 use Cake\Form\Schema;
-use BaserCore\Annotation\UnitTest;
-use BaserCore\Annotation\NoTodo;
-use BaserCore\Annotation\Checked;
 
 /**
  * SearchIndexesSearchForm
@@ -27,8 +24,6 @@ class SearchIndexesSearchForm extends Form
      * build Schema
      * @param Schema $schema
      * @return Schema
-     * @checked
-     * @noTodo
      */
     protected function _buildSchema(Schema $schema): Schema
     {
