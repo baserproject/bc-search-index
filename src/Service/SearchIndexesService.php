@@ -14,6 +14,7 @@ namespace BcSearchIndex\Service;
 use BaserCore\Error\BcException;
 use Cake\Core\Plugin;
 use Cake\ORM\Query;
+use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 use BaserCore\Annotation\NoTodo;
 use BaserCore\Annotation\Checked;
@@ -39,7 +40,7 @@ class SearchIndexesService implements SearchIndexesServiceInterface
      * SearchIndexes Table
      * @var SearchIndexesTable
      */
-    public $SearchIndexes;
+    public SearchIndexesTable|Table $SearchIndexes;
 
     /**
      * SearchIndexesService constructor.
@@ -85,7 +86,7 @@ class SearchIndexesService implements SearchIndexesServiceInterface
      */
     public function getIndex(array $queryParams = []): Query
     {
-        $query = $this->SearchIndexes->find()->order([
+        $query = $this->SearchIndexes->find()->orderBy([
             'SearchIndexes.priority DESC',
             'SearchIndexes.modified DESC',
             'SearchIndexes.id'
@@ -249,7 +250,7 @@ class SearchIndexesService implements SearchIndexesServiceInterface
                 'rght <' => $parentContent->rght
             ]);
         }
-        $contents = $contentsTable->find()->contain(['Sites'])->where($conditions)->order('lft')->all();
+        $contents = $contentsTable->find()->contain(['Sites'])->where($conditions)->orderBy('lft')->all();
 
         $db = $this->SearchIndexes->getConnection();
         $db->begin();

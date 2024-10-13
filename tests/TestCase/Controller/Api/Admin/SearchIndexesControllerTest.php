@@ -34,28 +34,12 @@ class SearchIndexesControllerTest extends BcTestCase
     use IntegrationTestTrait;
 
     /**
-     * Fixtures
-     *
-     * @var array
-     */
-    public $fixtures = [
-        'plugin.BaserCore.Factory/Users',
-        'plugin.BaserCore.Factory/Sites',
-        'plugin.BaserCore.Factory/UserGroups',
-        'plugin.BaserCore.Factory/UsersUserGroups',
-        'plugin.BaserCore.Factory/SearchIndexes',
-        'plugin.BaserCore.Factory/Dblogs',
-        'plugin.BaserCore.Factory/Contents',
-    ];
-
-    /**
      * set up
      *
      * @return void
      */
     public function setUp(): void
     {
-        $this->setFixtureTruncate();
         parent::setUp();
         $this->loadFixtureScenario(InitAppScenario::class);
         $token = $this->apiLoginAdmin();
@@ -93,7 +77,7 @@ class SearchIndexesControllerTest extends BcTestCase
 
         $event = new Event('filter');
         $searchIndexes->beforeFilter($event);
-        $this->assertFalse($searchIndexes->Security->getConfig('validatePost'));
+        $this->assertFalse($searchIndexes->FormProtection->getConfig('validate'));
     }
 
     /**

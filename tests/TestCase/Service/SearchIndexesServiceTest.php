@@ -35,30 +35,12 @@ class SearchIndexesServiceTest extends BcTestCase
     use ScenarioAwareTrait;
 
     /**
-     * Fixtures
-     *
-     * @var array
-     */
-    protected $fixtures = [
-        'plugin.BaserCore.Factory/Sites',
-        'plugin.BaserCore.Factory/Users',
-        'plugin.BaserCore.Factory/UsersUserGroups',
-        'plugin.BaserCore.Factory/UserGroups',
-        'plugin.BaserCore.Factory/Contents',
-        'plugin.BaserCore.Factory/ContentFolders',
-        'plugin.BaserCore.Factory/Pages',
-        'plugin.BaserCore.Factory/SiteConfigs',
-        'plugin.BaserCore.Factory/SearchIndexes',
-    ];
-
-    /**
      * Set Up
      *
      * @return void
      */
     public function setUp(): void
     {
-        $this->setFixtureTruncate();
         parent::setUp();
         $this->SearchIndexesService = new SearchIndexesService();
     }
@@ -235,7 +217,7 @@ class SearchIndexesServiceTest extends BcTestCase
      * createIndexConditionsテストのデータプロバイダ
      * @return array
      */
-    public function createIndexConditionsDataProvider(): array
+    public static function createIndexConditionsDataProvider(): array
     {
         return [
             // 空配列の結果テスト
@@ -285,7 +267,7 @@ class SearchIndexesServiceTest extends BcTestCase
      * Data Provider for parseQuery
      * @return array
      */
-    public function parseQueryDataProvider(): array
+    public static function parseQueryDataProvider(): array
     {
         return [
             ['', ['']],

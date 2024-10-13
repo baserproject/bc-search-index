@@ -39,18 +39,6 @@ class SearchIndexesControllerTest extends BcTestCase
     use BcContainerTrait;
 
     /**
-     * Fixtures
-     *
-     * @var array
-     */
-    public $fixtures = [
-        'plugin.BaserCore.Factory/Users',
-        'plugin.BaserCore.Factory/Sites',
-        'plugin.BaserCore.Factory/UsersUserGroups',
-        'plugin.BaserCore.Factory/UserGroups',
-    ];
-
-    /**
      * set up
      *
      * @return void
@@ -83,7 +71,7 @@ class SearchIndexesControllerTest extends BcTestCase
     {
         $event = new Event('Controller.beforeRender', $this->SearchIndexesController);
         $this->SearchIndexesController->beforeRender($event);
-        $this->assertEquals('BcSearchIndex.BcSearchIndex', $this->SearchIndexesController->viewBuilder()->getHelpers()[0]);
+        $this->assertEquals('BcSearchIndex.BcSearchIndex', $this->SearchIndexesController->viewBuilder()->getHelpers()['BcSearchIndex']['className']);
     }
 
     /**
