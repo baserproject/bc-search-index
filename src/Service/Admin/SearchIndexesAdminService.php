@@ -16,7 +16,6 @@ use BaserCore\Service\SitesServiceInterface;
 use BaserCore\Utility\BcContainerTrait;
 use BcSearchIndex\Form\SearchIndexesSearchForm;
 use BcSearchIndex\Service\SearchIndexesService;
-use Cake\Datasource\Paging\PaginatedInterface;
 use Cake\Http\ServerRequest;
 use BaserCore\Annotation\NoTodo;
 use BaserCore\Annotation\Checked;
@@ -35,7 +34,7 @@ class SearchIndexesAdminService extends SearchIndexesService implements SearchIn
 
     /**
      * 一覧画面に必要なデータを取得する
-     *
+     * 
      * @param \Cake\ORM\ResultSet $searchIndexes
      * @param int $siteId
      * @return array
@@ -43,7 +42,7 @@ class SearchIndexesAdminService extends SearchIndexesService implements SearchIn
      * @noTodo
      * @unitTest
      */
-    public function getViewVarsForIndex(PaginatedInterface|\Cake\ORM\ResultSet $searchIndexes, ServerRequest $request): array
+    public function getViewVarsForIndex(\Cake\ORM\ResultSet $searchIndexes, ServerRequest $request): array
     {
         $contentsService = $this->getService(ContentsServiceInterface::class);
         $sitesService = $this->getService(SitesServiceInterface::class);

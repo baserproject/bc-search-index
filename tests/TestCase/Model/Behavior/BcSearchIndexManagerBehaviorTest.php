@@ -13,9 +13,7 @@ namespace BcSearchIndex\Test\TestCase\Model\Behavior;
 use BaserCore\TestSuite\BcTestCase;
 use BaserCore\Model\Table\PagesTable;
 use BcSearchIndex\Model\Behavior\BcSearchIndexManagerBehavior;
-use BcSearchIndex\Test\Scenario\Service\SearchIndexesServiceScenario;
 use Cake\Event\Event;
-use CakephpFixtureFactories\Scenario\ScenarioAwareTrait;
 
 /**
  * Class BcSearchIndexManagerBehavioreTest
@@ -24,10 +22,14 @@ use CakephpFixtureFactories\Scenario\ScenarioAwareTrait;
 class BcSearchIndexManagerBehaviorTest extends BcTestCase
 {
 
-    /**
-     * Trait
-     */
-    use ScenarioAwareTrait;
+    public $fixtures = [
+        'plugin.BaserCore.Pages',
+        'plugin.BaserCore.Contents',
+        'plugin.BaserCore.Sites',
+        'plugin.BaserCore.ContentFolders',
+        'plugin.BcSearchIndex.SearchIndexes',
+        'plugin.BaserCore.SiteConfigs',
+    ];
 
     /**
      * @var PagesTable|BcSearchIndexManagerBehavior
@@ -43,7 +45,7 @@ class BcSearchIndexManagerBehaviorTest extends BcTestCase
     {
         $this->table = $this->getTableLocator()->get('BaserCore.Pages');
         $this->table->setPrimaryKey(['id']);
-        $this->table->addBehavior('BcSearchIndex.BcSearchIndexManager');
+        $this->table->addBehavior('BaserCore.BcSearchIndexManager');
         $this->BcSearchIndexManager = $this->table->getBehavior('BcSearchIndexManager');
         $this->SearchIndexes = $this->getTableLocator()->get('SearchIndexes');
         parent::setUp();
@@ -86,14 +88,13 @@ class BcSearchIndexManagerBehaviorTest extends BcTestCase
      */
     public function testSaveSearchIndex()
     {
-        $this->loadFixtureScenario(SearchIndexesServiceScenario::class);
         $page = $this->table->find()->contain(['Contents' => ['Sites']])->first();
         // 新規の場合
         $pageSearchIndex = $this->table->createSearchIndex($page);
         unset($pageSearchIndex['model_id']); // model_idがない場合は新規追加
         $this->assertTrue($this->table->saveSearchIndex($pageSearchIndex));
         // SearchIndexesが新規で追加されているかを確認
-        $this->assertCount(2, $this->BcSearchIndexManager->SearchIndexes->find()->all());
+        $this->assertCount(11, $this->BcSearchIndexManager->SearchIndexes->find()->all());
         // 更新の場合
         $pageSearchIndex = $this->table->createSearchIndex($page);
         $this->assertTrue($this->table->saveSearchIndex($pageSearchIndex));
@@ -108,9 +109,8 @@ class BcSearchIndexManagerBehaviorTest extends BcTestCase
      */
     public function testDeleteSearchIndex()
     {
-        $this->loadFixtureScenario(SearchIndexesServiceScenario::class);
-        $this->assertTrue($this->table->deleteSearchIndex(1));
-        $this->assertEquals(0, $this->BcSearchIndexManager->SearchIndexes->findByModelId(1)->count());
+        $this->assertTrue($this->table->deleteSearchIndex(5));
+        $this->assertTrue($this->BcSearchIndexManager->SearchIndexes->findByModelId(5)->isEmpty());
     }
 
     /**
@@ -119,11 +119,10 @@ class BcSearchIndexManagerBehaviorTest extends BcTestCase
      */
     public function testAfterDelete()
     {
-        $this->loadFixtureScenario(SearchIndexesServiceScenario::class);
         $event = new Event("afterSave");
         $page = $this->table->find()->contain(['Contents' => ['Sites']])->first();
         $this->BcSearchIndexManager->afterDelete($event, $page, new \ArrayObject());
-        $this->assertEquals(0, $this->SearchIndexes->findByModelId($page->id)->count());
+        $this->assertEquals(true, $this->SearchIndexes->findByModelId($page->id)->isEmpty());
     }
 
     /**
@@ -156,9 +155,8 @@ class BcSearchIndexManagerBehaviorTest extends BcTestCase
      * @param array $options
      * @dataProvider afterSaveDataProvider
      */
-    public function testAfterSave($exclude_search, $count)
+    public function testAfterSave($exclude_search, $exist)
     {
-        $this->loadFixtureScenario(SearchIndexesServiceScenario::class);
         $event = new Event("afterSave");
         $page = $this->table->find()->contain(['Contents' => ['Sites']])->first();
         if ($exclude_search) {
@@ -169,16 +167,16 @@ class BcSearchIndexManagerBehaviorTest extends BcTestCase
         }
 
         $this->BcSearchIndexManager->afterSave($event, $page, new \ArrayObject());
-        $this->assertEquals($count, $this->SearchIndexes->findByModelId($page->id)->count());
+        $this->assertEquals($exist, $this->SearchIndexes->findByModelId($page->id)->isEmpty());
     }
 
-    public static function afterSaveDataProvider()
+    public function afterSaveDataProvider()
     {
         return [
             // exclude_searchがある場合削除されているかを確認
-            [1, 0],
+            [1, true],
             // exclude_searchがなく、なおかつ新規の場合索引が作成されて存在するかをテスト
-            [0, 1]
+            [0, false]
         ];
     }
 }

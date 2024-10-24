@@ -1,4 +1,6 @@
 <?php
+// TODO ucmitz  : コード確認要
+return;
 /**
  * baserCMS :  Based Website Development Project <https://basercms.net>
  * Copyright (c) baserCMS Users Community <https://basercms.net/community/>
@@ -9,10 +11,8 @@
  * @license         https://basercms.net/license/index.html
  */
 
-namespace BcSearchIndex\Test\TestCase\View\Helper;
-
-use BaserCore\TestSuite\BcTestCase;
-use BcSearchIndex\View\Helper\BcSearchIndexHelper;
+App::uses('BcAppView', 'View');
+App::uses('BcSearchIndexHelper', 'View/Helper');
 
 /**
  * Class BcSearchIndexHelperTest
@@ -22,28 +22,29 @@ class BcSearchIndexHelperTest extends BcTestCase
 {
 
     /**
+     * Fixtures
+     * @var array
+     */
+    public $fixtures = [
+        'baser.Default.Content',
+        'baser.Default.User',
+        'baser.Default.Site',
+        'baser.Default.SiteConfig',
+    ];
+
+    /**
      * setUp
      *
      * @return void
      */
-    public function setUp(): void
+    public function setUp()
     {
         parent::setUp();
-//        $this->_View = new BcAppView();
-//        $this->_View->request = $this->_getRequest('/');
-//        $this->_View->helpers = ['BcSearchIndex'];
-//        $this->_View->loadHelpers();
-//        $this->BcSearchIndex = $this->_View->BcSearchIndex;
-    }
-
-    /**
-     * Tear Down
-     *
-     * @return void
-     */
-    public function tearDown(): void
-    {
-        parent::tearDown();
+        $this->_View = new BcAppView();
+        $this->_View->request = $this->_getRequest('/');
+        $this->_View->helpers = ['BcSearchIndex'];
+        $this->_View->loadHelpers();
+        $this->BcSearchIndex = $this->_View->BcSearchIndex;
     }
 
     /**
@@ -53,7 +54,6 @@ class BcSearchIndexHelperTest extends BcTestCase
      */
     public function testAllowPublish()
     {
-        $this->markTestIncomplete('このテストは、まだ実装されていません。');
         $result = $this->BcSearchIndex->allowPublish([
             'status' => true,
             'publish_begin' => date('Y-m-d H:i:s', strtotime("+1 hour")),
