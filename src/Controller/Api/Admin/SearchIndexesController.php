@@ -20,7 +20,7 @@ use BaserCore\Annotation\NoTodo;
 use BaserCore\Annotation\Checked;
 
 /**
- * SearchIndicesController
+ * SearchIndexesController
  */
 class SearchIndexesController extends BcAdminApiController
 {
@@ -62,8 +62,7 @@ class SearchIndexesController extends BcAdminApiController
             $this->setResponse($this->response->withStatus(404));
             $message = __d('baser_core', 'データが見つかりません。');
         } catch (\Throwable $e) {
-            $message = __d('baser_core', 'データベース処理中にエラーが発生しました。') . $e->getMessage();
-            $this->setResponse($this->response->withStatus(500));
+            $message = $this->handleThrowable($e);
         }
         $this->set([
             'message' => $message,
@@ -86,13 +85,8 @@ class SearchIndexesController extends BcAdminApiController
         $allowMethod = [
             'delete' => __d('baser_core', '削除')
         ];
-        // PHP 8.5 で null を配列オフセットに使うのは非推奨のため空文字に変換する
-        $method = $this->getRequest()->getData('batch') ?? '';
-        if (!isset($allowMethod[$method])) {
-            $this->setResponse($this->response->withStatus(500));
-            $this->viewBuilder()->setOption('serialize', []);
-            return;
-        }
+        if (!$this->validateBatchRequest($allowMethod)) return;
+        $method = $this->getRequest()->getData('batch');
         try {
             $service->batch($method, $this->getRequest()->getData('batch_targets'));
             $this->BcMessage->setSuccess(
@@ -102,8 +96,7 @@ class SearchIndexesController extends BcAdminApiController
             );
             $message = __d('baser_core', '一括処理が完了しました。');
         } catch (\Throwable $e) {
-            $this->setResponse($this->response->withStatus(500));
-            $message = __d('baser_core', 'データベース処理中にエラーが発生しました。') . $e->getMessage();
+            $message = $this->handleThrowable($e);
         }
         $this->set(['message' => $message]);
         $this->viewBuilder()->setOption('serialize', ['message']);
@@ -129,8 +122,7 @@ class SearchIndexesController extends BcAdminApiController
                 $message = __d('baser_core', '検索インデックスの再構築に失敗しました。');
             }
         } catch (\Throwable $e) {
-            $this->setResponse($this->response->withStatus(500));
-            $message = __d('baser_core', 'データベース処理中にエラーが発生しました。') . $e->getMessage();
+            $message = $this->handleThrowable($e);
         }
 
 
@@ -202,8 +194,7 @@ class SearchIndexesController extends BcAdminApiController
             $this->setResponse($this->response->withStatus(404));
             $message = __d('baser_core', 'データが見つかりません。');
         } catch (\Throwable $e) {
-            $message = __d('baser_core', 'データベース処理中にエラーが発生しました。') . $e->getMessage();
-            $this->setResponse($this->response->withStatus(500));
+            $message = $this->handleThrowable($e);
         }
 
         $this->set([

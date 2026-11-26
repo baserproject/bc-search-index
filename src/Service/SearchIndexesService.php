@@ -134,6 +134,11 @@ class SearchIndexesService implements SearchIndexesServiceInterface
             if (preg_match('/priority_[0-9]+$/', $key) || $value === '') {
                 unset($options[$key]);
             }
+            // 数値で指定する条件に数字以外が渡されると型変換できず例外になるため、条件にしない
+            if (in_array($key, ['site_id', 's', 'content_id', 'c', 'content_filter_id', 'cf'], true)
+                && (!is_scalar($value) || !ctype_digit((string)$value))) {
+                unset($options[$key]);
+            }
         }
         if (empty($options)) return [];
 
@@ -351,6 +356,9 @@ class SearchIndexesService implements SearchIndexesServiceInterface
      */
     public function batch(string $method, array $ids): bool
     {
+        if (!$ids) return true;
+        // 削除済みの ID や数字以外の値は飛ばす（例外にすると、対象の有無で応答が変わる）
+        $ids = $this->SearchIndexes->filterExistingIds($ids);
         if (!$ids) return true;
         $db = $this->SearchIndexes->getConnection();
         $db->begin();
